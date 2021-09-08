@@ -1,0 +1,1 @@
+/usr/bin/cc -g CMakeFiles/c_tester.dir/main.c.o -o c_tester 
