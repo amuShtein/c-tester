@@ -8,6 +8,7 @@
 #define BUF 10000
 
 #define CREATE_TESTFILE_OPT "-c"
+#define MAX_TESTFILE_NAME_LEN 16
 #define DEFAULT_TESTFILE_NAME "tf"
 
 #define CMD_LEN 10

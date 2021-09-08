@@ -1,6 +1,6 @@
 #include "main.h"
 
-char* testfile = NULL;
+char *testfile = NULL;
 char *name = NULL;
 char *full_name_str = NULL;
 
@@ -15,7 +15,6 @@ char* full_name() {
 
         strcat(cwd, "/");
         strcat(cwd, name);
-        printf("program: %s\n", cwd);
         full_name_str = cwd;
     }
 
@@ -24,16 +23,13 @@ char* full_name() {
 
 int get_arg(char* arg) {
     if(strcmp(arg, CREATE_TESTFILE_OPT) == 0) {
-        printf("-c option\n");
         return CREATE_TESTFILE;
     } else {
-        testfile = arg;
         return EXISTING_TESTFILE;
     }
 }
 
 char* create_testfile() {
-    printf("creating testfile...\n");
     FILE *fd = fopen(DEFAULT_TESTFILE_NAME, "w");
     fputs(default_testfile, fd);
     fclose(fd);
@@ -145,8 +141,6 @@ struct test** parse_testfile() {
         printf("cannot open testfile '%s'", testfile);
     }
 
-    printf("parsing testfile...\n");
-
     int i = 0;
     int array_buf = 32;
     struct test **tests = malloc(sizeof(struct test*) * array_buf);
@@ -155,10 +149,8 @@ struct test** parse_testfile() {
     char *cmd = malloc(CMD_LEN);
     char *buf;
     while (fscanf(fd, "%s", cmd) > 0) {
-        printf("cmd: %s\n", cmd);
         switch (get_cmd(cmd)) {
             case NAME_TF_CMD:
-                printf("reading name\n");
                 buf = malloc(NAME_LEN);
                 fscanf(fd,"%s\n", buf);
                 buf = realloc(buf, strlen(buf) + 1);
@@ -166,10 +158,8 @@ struct test** parse_testfile() {
                     free(name);
                 }
                 name = buf;
-                printf("new name: %s\n", name);
                 break;
             case TEST_TF_CMD:
-                printf("creating new test...\n");
                 cur = malloc(sizeof (struct test));
 
                 buf = malloc(TEST_NAME_LEN);
@@ -177,20 +167,14 @@ struct test** parse_testfile() {
                 buf = realloc(buf, strlen(buf) + 1);
                 cur->name = buf;
                 buf = NULL;
-                printf("test %s created\n", cur->name);
                 break;
             case INPUT_TF_CMD:
-                printf("set input...\n");
                 cur->input = scan_data(fd);
-                printf("input of test %s = '%s'", cur->name, cur->input);
                 break;
             case OUTPUT_TF_CMD:
-                printf("set output...\n");
                 cur->output = scan_data(fd);
-                printf("output of test %s = '%s'", cur->name, cur->output);
                 break;
             case TEST_END_TF_CMD:
-                printf("finish test %s\n", cur->name);
                 if(i + 2 >= array_buf) {
                     array_buf *= 2;
                     tests = realloc(tests, sizeof(struct test*) * array_buf);
@@ -211,35 +195,21 @@ struct test** parse_testfile() {
 
 int main(int argc, char *argv[]) {
     for(int i = 1; i < argc; i++) {
-        printf("%s\n", argv[i]);
         switch (get_arg(argv[i])) {
-            case CREATE_TESTFILE: testfile = create_testfile();
-            case EXISTING_TESTFILE: break;
+            case CREATE_TESTFILE:
+                testfile = malloc(MAX_TESTFILE_NAME_LEN);
+                strcpy(testfile, create_testfile());
+                testfile = realloc(testfile, strlen(testfile) + 1);
+                break;
+            case EXISTING_TESTFILE:
+                testfile = malloc(MAX_TESTFILE_NAME_LEN);
+                strcpy(testfile, argv[i]);
+                testfile = realloc(testfile, strlen(testfile) + 1);
+                break;
         }
     }
 
     struct test **tests = parse_testfile();
-
-    char *inp[] = {
-            "1 2",
-            "0 5",
-            "10 -5",
-            "10000 10000",
-            "-1 -1",
-            "0 0"
-    };
-
-    char *out[] = {
-            "3\n",
-            "5\n",
-            "5\n",
-            "20001\n",
-            "-2\n",
-            "0\n"
-    };
-
-//    int size = sizeof(inp)/sizeof(inp[0]);
-//    printf("size = %d\n", size);
 
     for(int i = 0; tests[i] != 0; i++) {
         tests[i]->status = test(tests[i]->input, tests[i]->output) == 1 ? PASSED : FAILED;
