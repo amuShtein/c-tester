@@ -7,7 +7,7 @@
 
 #define BUF 10000
 
-char *name = NULL;
+char *name = "testing";
 char *full_name_str = NULL;
 
 char* full_name() {
