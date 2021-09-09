@@ -1,4 +1,4 @@
-#name a
+#name testing
 
 #test test1
 #input
@@ -12,4 +12,11 @@
 100 -200
 #output
 -100
+#end
+
+#test test3
+#input
+200 -200
+#output
+1
 #end

@@ -44,13 +44,13 @@ enum {
 };
 
 char *default_testfile =
-"#name a\n"
+"#name a\n\n"
 "#test test1\n"
 "#input\n"
 "100 204\n"
 "#output\n"
 "304\n"
-"#end\n"
+"#end\n\n"
 "#test test2\n"
 "#input\n"
 "100 -200\n"

@@ -29,12 +29,12 @@ int get_arg(char* arg) {
     }
 }
 
-char* create_testfile() {
-    FILE *fd = fopen(DEFAULT_TESTFILE_NAME, "w");
+char* create_testfile(char* s) {
+    FILE *fd = fopen(s, "w");
     fputs(default_testfile, fd);
     fclose(fd);
 
-    return DEFAULT_TESTFILE_NAME;
+    return s;
 }
 
 int test(char* in, char* out) {
@@ -48,8 +48,8 @@ int test(char* in, char* out) {
     pid_t pid;
 
     if ((pid = fork()) == 0) { /* child */
-        dup2(pipe_in[0], 0); // set stdin of the process to write end of the pipe
-        dup2(pipe_out[1], 1); // set stdout of the process to write end of the pipe
+        dup2(pipe_in[0], 0); // set stdin of the process
+        dup2(pipe_out[1], 1); // set stdout of the process
 
         write(pipe_in[1], in, BUF);
         execvp(cmd[0], cmd); // execute the program.
@@ -137,8 +137,9 @@ char* scan_data(FILE *fd) {
 
 struct test** parse_testfile() {
     FILE *fd = fopen(testfile, "r");
-    if(fd == 0) {
-        printf("cannot open testfile '%s'", testfile);
+    if(fd <= 0) {
+        printf("cannot open testfile '%s'\n", testfile);
+        return NULL;
     }
 
     int i = 0;
@@ -197,10 +198,8 @@ int main(int argc, char *argv[]) {
     for(int i = 1; i < argc; i++) {
         switch (get_arg(argv[i])) {
             case CREATE_TESTFILE:
-                testfile = malloc(MAX_TESTFILE_NAME_LEN);
-                strcpy(testfile, create_testfile());
-                testfile = realloc(testfile, strlen(testfile) + 1);
-                break;
+                printf("default testfile '%s' created\n", create_testfile(argc > i + 1? argv[i+1] : DEFAULT_TESTFILE_NAME));
+                return 0;
             case EXISTING_TESTFILE:
                 testfile = malloc(MAX_TESTFILE_NAME_LEN);
                 strcpy(testfile, argv[i]);
@@ -209,8 +208,17 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    if(testfile == NULL) {
+        testfile = malloc(MAX_TESTFILE_NAME_LEN);
+        strcpy(testfile, DEFAULT_TESTFILE_NAME);
+        testfile = realloc(testfile, strlen(testfile) + 1);
+    }
+
     struct test **tests = parse_testfile();
 
+    if(tests == NULL) {
+        return 0;
+    }
     for(int i = 0; tests[i] != 0; i++) {
         tests[i]->status = test(tests[i]->input, tests[i]->output) == 1 ? PASSED : FAILED;
         printf("test[%s]: %s\n", tests[i]->name, tests[i]->status == PASSED? "passed" : "failed");
