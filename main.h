@@ -43,18 +43,18 @@ enum {
 };
 
 char *default_testfile =
-"#name a\n\n"
-"#test test1\n"
+"#name a.out\n\n"
+"#test correct\n"
 "#input\n"
 "100 204\n"
 "#output\n"
 "304\n"
 "#end\n\n"
-"#test test2\n"
+"#test incorrect\n"
 "#input\n"
 "100 -200\n"
 "#output\n"
-"-100\n"
+"-101s\n"
 "#end\0";
 
 enum {

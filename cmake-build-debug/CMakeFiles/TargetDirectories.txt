@@ -1,3 +1,0 @@
-/home/xnpst/CLionProjects/c-tester/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/xnpst/CLionProjects/c-tester/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/xnpst/CLionProjects/c-tester/cmake-build-debug/CMakeFiles/c_tester.dir
