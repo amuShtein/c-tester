@@ -12,8 +12,7 @@
 #define DEFAULT_TESTFILE_NAME "tf"
 
 #define CMD_LEN 10
-#define INPUT_LEN 1024
-#define OUTPUT_LEN 1024
+#define INPUT_OUTPUT_LEN 1024
 #define NAME_LEN 64
 #define TEST_NAME_LEN 64
 #define NAME_TF "#name"

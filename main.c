@@ -116,7 +116,7 @@ char* scan_data(FILE *fd) {
     while ((c = fgetc(fd)) == ' ' || c == '\n');
 
     int j = 0;
-    int buf_len = INPUT_LEN;
+    int buf_len = INPUT_OUTPUT_LEN;
     char *buf = malloc(buf_len);
 
     do {
